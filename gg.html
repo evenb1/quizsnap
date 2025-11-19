@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1" />
+		<title>AWS Shared Responsibility Model — Quiz</title>
+		<style>
+			:root{--bg:#f7f9fc;--card:#fff;--accent:#0b66c3;--good:#1b7a28;--bad:#c32b2b}
+			html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial}
+			body{display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#eef4fb,var(--bg));padding:24px}
+			.card{background:var(--card);max-width:720px;width:100%;padding:24px;border-radius:10px;box-shadow:0 6px 20px rgba(11,102,195,0.06)}
+			h1{margin:0 0 12px;font-size:20px;color:#0b2340}
+			p.lead{margin:0 0 18px;color:#253244}
+			fieldset{border:0;padding:0;margin:0 0 16px}
+			label.option{display:block;padding:10px 12px;margin:8px 0;border-radius:6px;border:1px solid #e6eef8;cursor:pointer}
+			input[type=radio]{margin-right:10px}
+			.controls{display:flex;gap:12px;align-items:center}
+			button{background:var(--accent);color:#fff;border:0;padding:10px 14px;border-radius:6px;font-weight:600;cursor:pointer}
+			button:active{transform:translateY(1px)}
+			.result{margin-top:16px;padding:12px;border-radius:8px}
+			.result.correct{background:#eef9f0;border:1px solid rgba(27,122,40,0.12);color:var(--good)}
+			.result.incorrect{background:#fff6f6;border:1px solid rgba(195,43,43,0.12);color:var(--bad)}
+			.explain{margin-top:8px;color:#142033;font-size:14px}
+			@media (max-width:420px){.card{padding:16px}label.option{padding:10px}}
+		</style>
+	</head>
+	<body>
+		<main class="card" role="main">
+			<h1>AWS Shared Responsibility Model — Quick Quiz</h1>
+			<p class="lead">According to the AWS Shared Responsibility Model, which of the following is a responsibility of the customer when using an Infrastructure as a Service (IaaS) offering like Amazon EC2?</p>
+
+			<form id="quiz" onsubmit="return false;" aria-labelledby="question">
+				<fieldset>
+					<label class="option"><input type="radio" name="choice" value="A">A. Maintaining the virtualization infrastructure, including the hypervisor.</label>
+					<label class="option"><input type="radio" name="choice" value="B">B. Ensuring the network infrastructure, such as routers and switches, is operational.</label>
+					<label class="option"><input type="radio" name="choice" value="C">C. Managing the physical security of the data centers where the servers are located.</label>
+					<label class="option"><input type="radio" name="choice" value="D">D. Applying patches and updates to the guest operating system on an EC2 instance.</label>
+				</fieldset>
+
+				<div class="controls">
+					<button id="submit">Submit</button>
+					<button id="show" type="button">Show Answer</button>
+				</div>
+
+				<div id="result" class="result" aria-live="polite" style="display:none"></div>
+			</form>
+
+			<!-- SAMPLE QUIZ FOR TESTING -->
+			<hr />
+			<section id="sample-quiz-section">
+				<h2>Sample Quiz for Testing</h2>
+				<form id="sample-quiz" onsubmit="return false;">
+					<!-- Question 1 -->
+					<fieldset>
+						<legend>Question 1 (Multiple Choice) — What is the capital of France?</legend>
+						<label class="option"><input type="radio" name="q1" value="A">A) London</label>
+						<label class="option"><input type="radio" name="q1" value="B">B) Berlin</label>
+						<label class="option"><input type="radio" name="q1" value="C">C) Paris</label>
+						<label class="option"><input type="radio" name="q1" value="D">D) Madrid</label>
+					</fieldset>
+
+					<!-- Question 2 -->
+					<fieldset>
+						<legend>Question 2 (Multiple Choice) — Which programming language is known as the "language of the web"?</legend>
+						<label class="option"><input type="radio" name="q2" value="A">A) Python</label>
+						<label class="option"><input type="radio" name="q2" value="B">B) JavaScript</label>
+						<label class="option"><input type="radio" name="q2" value="C">C) Java</label>
+						<label class="option"><input type="radio" name="q2" value="D">D) C++</label>
+					</fieldset>
+
+					<!-- Question 3 -->
+					<fieldset>
+						<legend>Question 3 (True/False) — The Earth is the third planet from the Sun.</legend>
+						<label class="option"><input type="radio" name="q3" value="true">True</label>
+						<label class="option"><input type="radio" name="q3" value="false">False</label>
+					</fieldset>
+
+					<!-- Question 4 -->
+					<fieldset>
+						<legend>Question 4 (Short Answer) — What is the chemical symbol for water?</legend>
+						<input id="q4" name="q4" type="text" placeholder="Type your answer here" style="width:100%;padding:10px;margin-top:8px;border-radius:6px;border:1px solid #e6eef8;" />
+					</fieldset>
+
+					<div class="controls">
+						<button id="sample-submit">Check Sample Quiz</button>
+						<button id="sample-reset" type="button">Reset</button>
+					</div>
+
+					<div id="sample-result" class="result" aria-live="polite" style="display:none"></div>
+				</form>
+			</section>
+
+			<script>
+				(function(){
+					const correct = 'D';
+					const submit = document.getElementById('submit');
+					const show = document.getElementById('show');
+					const result = document.getElementById('result');
+					const form = document.getElementById('quiz');
+
+					function getSelected(){
+						const r = form.querySelector('input[name="choice"]:checked');
+						return r ? r.value : null;
+					}
+
+					function showResult(isCorrect, explanation, chosen){
+						result.style.display = 'block';
+						result.className = 'result ' + (isCorrect ? 'correct' : 'incorrect');
+						result.innerHTML = '<strong>' + (isCorrect ? 'Correct.' : 'Incorrect.') + '</strong>' +
+							'<div class="explain">' + explanation + '</div>';
+					}
+
+					submit.addEventListener('click', function(){
+						const sel = getSelected();
+						if(!sel){
+							result.style.display = 'block';
+							result.className = 'result incorrect';
+							result.innerHTML = '<strong>Please select an option.</strong>';
+							return;
+						}
+						if(sel === correct){
+							showResult(true, 'Applying patches and updates to the guest operating system is the customer\'s responsibility in IaaS. AWS is responsible for the underlying physical infrastructure, virtualization layer (hypervisor), and the network hardware.');
+						} else {
+							showResult(false, 'The correct answer is D. In IaaS (e.g., EC2) the customer manages the guest OS, applications, and patches, while AWS manages the physical datacenter, networking hardware, and virtualization infrastructure.');
+						}
+					});
+
+					show.addEventListener('click', function(){
+						showResult(true, 'Answer: D — Applying patches and updates to the guest operating system on an EC2 instance. Customers are responsible for OS and application-level patches in IaaS.');
+					});
+
+					// --- Sample quiz logic ---
+					const sampleForm = document.getElementById('sample-quiz');
+					const sampleSubmit = document.getElementById('sample-submit');
+					const sampleReset = document.getElementById('sample-reset');
+					const sampleResult = document.getElementById('sample-result');
+
+					function getSampleValue(name){
+						const el = sampleForm.querySelector('input[name="'+name+'"]:checked');
+						return el ? el.value : null;
+					}
+
+					sampleSubmit.addEventListener('click', function(){
+						// correct answers: q1=C, q2=B, q3=true, q4=H2O
+						const answers = {
+							q1: 'C',
+							q2: 'B',
+							q3: 'true',
+							q4: 'H2O'
+						};
+						let score = 0;
+						let total = 4;
+						let out = '';
+
+						const a1 = getSampleValue('q1');
+						out += '<div><strong>Q1:</strong> ' + (a1 === answers.q1 ? '<span style="color:var(--good)">Correct</span>' : '<span style="color:var(--bad)">Incorrect</span>') + '</div>';
+						if(a1 === answers.q1) score++;
+
+						const a2 = getSampleValue('q2');
+						out += '<div><strong>Q2:</strong> ' + (a2 === answers.q2 ? '<span style="color:var(--good)">Correct</span>' : '<span style="color:var(--bad)">Incorrect</span>') + '</div>';
+						if(a2 === answers.q2) score++;
+
+						const a3 = getSampleValue('q3');
+						out += '<div><strong>Q3:</strong> ' + (a3 === answers.q3 ? '<span style="color:var(--good)">Correct</span>' : '<span style="color:var(--bad)">Incorrect</span>') + '</div>';
+						if(a3 === answers.q3) score++;
+
+						const a4 = (document.getElementById('q4').value || '').trim();
+						const a4norm = a4.toUpperCase();
+						const q4correct = (a4norm === 'H2O' || a4norm === 'H₂O' || a4norm === 'WATER');
+						out += '<div><strong>Q4:</strong> ' + (q4correct ? '<span style="color:var(--good)">Correct</span>' : '<span style="color:var(--bad)">Incorrect</span>') + '</div>';
+						if(q4correct) score++;
+
+						out += '<div style="margin-top:8px;font-weight:600">Score: ' + score + ' / ' + total + '</div>';
+
+						sampleResult.style.display = 'block';
+						sampleResult.className = 'result ' + (score === total ? 'correct' : 'incorrect');
+						sampleResult.innerHTML = out;
+					});
+
+					sampleReset.addEventListener('click', function(){
+						sampleForm.reset();
+						sampleResult.style.display = 'none';
+					});
+				})();
+			</script>
+		</main>
+	</body>
+</html>
+
