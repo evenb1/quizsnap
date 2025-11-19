@@ -10,7 +10,7 @@ if (typeof window.quizSnapLoaded === 'undefined') {
   };
 
   // Gemini API Configuration
-  const GEMINI_API_KEY = 'AIzaSyD6JxruDiw_bnY4mHnDJJRevYbhqc_piw8';
+  const GEMINI_API_KEY = '';
   const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
   // UI Elements
